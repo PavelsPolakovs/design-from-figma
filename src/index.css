@@ -1,3 +1,29 @@
+/* Load config for prefix — must come before imports */
+@config "../tailwind.config.ts";
+
+/* Full Tailwind import — preflight will need separate handling */
+@import "tailwindcss";
+
+/* ─── Default theme ────────────────────────────────────────────── */
+@theme {
+  --color-brand: #aa3bff;
+  --color-brand-bg: rgba(170, 59, 255, 0.1);
+  --color-surface: #ffffff;
+  --color-text: #6b6375;
+  --color-text-heading: #08060d;
+  --color-border: #e5e4e7;
+}
+
+/* ─── IOAF theme (activated when a parent carries .ioaf) ────────── */
+.ioaf {
+  --color-brand: #aa3bff;
+  --color-brand-bg: rgba(170, 59, 255, 0.1);
+  --color-surface: #ffffff;
+  --color-text: #6b6375;
+  --color-text-heading: #08060d;
+  --color-border: #e5e4e7;
+}
+
 :root {
   --text: #6b6375;
   --text-h: #08060d;
