@@ -1,64 +1,99 @@
-/* Styles that cannot be expressed as Tailwind utility classes */
+/* ─── 404 Page ──────────────────────────────────────────────────── */
 
-/* Hero: 3D transforms and absolute positioning on nested children */
-.hero {
+.not-found {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 40px 20px;
+}
+
+.not-found__inner {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0;
+}
 
-  .base,
-  .framework,
-  .vite {
-    inset-inline: 0;
-    margin: 0 auto;
-  }
+/* Large decorative background number */
+.not-found__code {
+  font-size: clamp(120px, 25vw, 220px);
+  font-weight: 700;
+  line-height: 1;
+  margin: 0;
+  color: var(--border);
+  letter-spacing: -8px;
+  user-select: none;
+  pointer-events: none;
 
-  .base {
-    width: 170px;
-    position: relative;
-    z-index: 0;
-  }
-
-  .framework,
-  .vite {
-    position: absolute;
-  }
-
-  .framework {
-    z-index: 1;
-    top: 34px;
-    height: 28px;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
-      scale(1.4);
-  }
-
-  .vite {
-    z-index: 0;
-    top: 107px;
-    height: 26px;
-    width: auto;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
-      scale(0.8);
+  @media (prefers-color-scheme: dark) {
+    color: #2e303a;
   }
 }
 
-/* Ticks: pseudo-element content and border tricks */
-.ticks {
-  position: relative;
-  width: 100%;
+/* Content card sits over the number */
+.not-found__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  margin-top: -60px;
+}
 
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: -4.5px;
-    border: 5px solid transparent;
+/* Alert / exclamation icon */
+.not-found__icon {
+  flex-shrink: 0;
+}
+
+/* Heading */
+.not-found__heading {
+  font-family: var(--heading);
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  line-height: 120%;
+  color: var(--text-h);
+  margin: 0;
+
+  @media (max-width: 1024px) {
+    font-size: 28px;
+  }
+}
+
+/* Description */
+.not-found__description {
+  font-size: 16px;
+  line-height: 160%;
+  color: var(--text);
+  max-width: 400px;
+  margin: 0;
+}
+
+/* CTA button */
+.not-found__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  border: 2px solid transparent;
+  transition: opacity 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    opacity: 0.88;
+    box-shadow: 0 4px 16px var(--accent-border);
   }
 
-  &::before {
-    left: 0;
-    border-left-color: var(--border);
-  }
-  &::after {
-    right: 0;
-    border-right-color: var(--border);
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
   }
 }
