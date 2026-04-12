@@ -12,6 +12,15 @@
   --color-text: #6b6375;
   --color-text-heading: #08060d;
   --color-border: #e5e4e7;
+
+  /* ── Segmented Button tokens (Material Design 3) ── */
+  --color-secondary: #7c6ba7;   /* selected segment fill                   */
+  --color-on-secondary: #ffffff; /* text / icon on selected segment         */
+  --color-outline: #615d67;     /* segment border                          */
+  --color-on-surface: #1d1b20;  /* text on unselected segment              */
+
+  /* ── Font families ── */
+  --font-roboto: 'Roboto', sans-serif;
 }
 
 /* ─── IOAF theme (activated when a parent carries .ioaf) ────────── */

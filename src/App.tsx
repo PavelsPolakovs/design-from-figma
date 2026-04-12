@@ -2,10 +2,18 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
+import { SegmentedButton } from './components/SegmentedButton'
 import './App.css'
+
+const SEGMENTS = [
+  { value: 'flights', label: 'Flights' },
+  { value: 'hotels',  label: 'Hotels'  },
+  { value: 'rentals', label: 'Rentals' },
+]
 
 function App() {
   const [count, setCount] = useState(0)
+  const [trip, setTrip] = useState(['flights'])
 
   return (
     <>
@@ -30,6 +38,15 @@ function App() {
         >
           Count is {count}
         </button>
+
+        test
+
+        <SegmentedButton
+          segments={SEGMENTS}
+          selected={trip}
+          onChange={setTrip}
+          aria-label="Trip type"
+        />
       </section>
 
       <div className="ticks"></div>
