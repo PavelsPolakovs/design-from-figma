@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -32,7 +32,63 @@ export interface SegmentedButtonProps {
    * Defaults to `false` (single-select / radio behaviour).
    */
   multiSelect?: boolean
+  /**
+   * Visual colour variant.
+   * - `primary`   — blue  (default)
+   * - `secondary` — orange
+   * - `danger`    — red
+   */
+  variant?: 'primary' | 'secondary' | 'danger'
+  /**
+   * Height preset.
+   * - `sm` — 32 px
+   * - `md` — 40 px (default)
+   * - `lg` — 48 px
+   */
+  size?: 'sm' | 'md' | 'lg'
+  /** When `true` all segments are non-interactive and rendered with disabled styles. */
+  disabled?: boolean
 }
+
+// ─── Variant colour tokens ────────────────────────────────────────────────────
+
+const VARIANT_COLORS = {
+  primary: {
+    selected:        '#1976d2',
+    selectedHover:   'color-mix(in srgb, white 8%, #1976d2)',
+    container:       '#e3f2fd',
+    containerHover:  '#bbdefb',
+    border:          '#90caf9',
+    onSelected:      '#ffffff',
+    onUnselected:    '#414141',
+  },
+  secondary: {
+    selected:        '#f57c00',
+    selectedHover:   'color-mix(in srgb, white 8%, #f57c00)',
+    container:       '#fff8e1',
+    containerHover:  '#ffe0b2',
+    border:          '#ffe082',
+    onSelected:      '#ffffff',
+    onUnselected:    '#414141',
+  },
+  danger: {
+    selected:        '#d32f2f',
+    selectedHover:   'color-mix(in srgb, white 8%, #d32f2f)',
+    container:       '#ffebee',
+    containerHover:  '#ffcdd2',
+    border:          '#e57373',
+    onSelected:      '#ffffff',
+    onUnselected:    '#414141',
+  },
+} as const
+
+// ─── Size → height class ──────────────────────────────────────────────────────
+
+const SIZE_HEIGHT = {
+  sm: 'oaf:h-8',   // 32 px
+  md: 'oaf:h-10',  // 40 px
+  lg: 'oaf:h-12',  // 48 px
+} as const
 
 // ─── Internal icon ────────────────────────────────────────────────────────────
 
@@ -62,8 +118,14 @@ export function SegmentedButton({
   onChange,
   'aria-label': ariaLabel,
   multiSelect = false,
+  variant = 'primary',
+  size = 'md',
+  disabled = false,
 }: SegmentedButtonProps) {
+  const colors = VARIANT_COLORS[variant]
+
   const handleClick = (value: string) => {
+    if (disabled) return
     if (multiSelect) {
       onChange(
         selected.includes(value)
@@ -79,7 +141,17 @@ export function SegmentedButton({
     <div
       role="group"
       aria-label={ariaLabel}
+      aria-disabled={disabled || undefined}
       className="oaf:inline-flex oaf:items-stretch"
+      style={{
+        '--sb-selected':        colors.selected,
+        '--sb-selected-hover':  colors.selectedHover,
+        '--sb-container':       colors.container,
+        '--sb-container-hover': colors.containerHover,
+        '--sb-border':          colors.border,
+        '--sb-on-selected':     colors.onSelected,
+        '--sb-on-unselected':   colors.onUnselected,
+      } as CSSProperties}
     >
       {segments.map((segment, index) => {
         const isFirst = index === 0
@@ -92,18 +164,22 @@ export function SegmentedButton({
             key={segment.value}
             type="button"
             aria-pressed={isSelected}
+            disabled={disabled}
             onClick={() => handleClick(segment.value)}
             className={[
               // ── Layout ─────────────────────────────────────────────────────
               'oaf:relative oaf:inline-flex oaf:items-center oaf:justify-center oaf:gap-2',
               // ── Size ───────────────────────────────────────────────────────
-              // h-10 = 40 px visual container; py-2.5 = 10 px vertical padding
-              // px-3  = 12 px horizontal padding  (Figma: paddingLeft/Right 12)
-              'oaf:h-10 oaf:px-3 oaf:py-2.5',
+              // Height varies by prop; padding is 8 px (p-2) on all sides
+              SIZE_HEIGHT[size],
+              'oaf:p-2',
               // ── Typography — Roboto Medium 14 / lh 20 / ls +0.1 px ────────
               'oaf:font-roboto oaf:text-[14px] oaf:font-medium oaf:leading-5 oaf:tracking-[0.1px]',
               // ── Border ─────────────────────────────────────────────────────
-              'oaf:border oaf:border-outline',
+              'oaf:border',
+              disabled
+                ? 'oaf:border-(--color-sb-disabled-border)'
+                : 'oaf:border-(--sb-border)',
               // ── Corner radius ──────────────────────────────────────────────
               // First segment → left corners fully rounded
               // Last  segment → right corners fully rounded
@@ -118,34 +194,42 @@ export function SegmentedButton({
               // Negative left margin collapses the shared border to 1 px
               !isFirst && 'oaf:-ml-px',
               // ── Colour scheme ──────────────────────────────────────────────
-              isSelected
+              disabled
                 ? [
-                    'oaf:bg-secondary oaf:text-on-secondary',
-                    // Elevate above neighbours so the full border stays visible
-                    'oaf:z-10',
-                    // Hover: 8 % white state-layer over the secondary fill
-                    'oaf:hover:bg-[color-mix(in_srgb,#ffffff_8%,#7c6ba7)]',
+                    'oaf:bg-(--color-sb-disabled-bg)',
+                    'oaf:text-(--color-sb-disabled-text)',
+                    'oaf:cursor-not-allowed',
                   ]
-                : [
-                    'oaf:bg-transparent oaf:text-on-surface',
-                    // Hover: 8 % on-surface state-layer
-                    'oaf:hover:bg-[rgba(29,27,32,0.08)]',
-                  ],
+                : isSelected
+                  ? [
+                      'oaf:bg-(--sb-selected)',
+                      'oaf:text-(--sb-on-selected)',
+                      // Elevate above neighbours so the full border stays visible
+                      'oaf:z-10',
+                      'oaf:hover:bg-(--sb-selected-hover)',
+                    ]
+                  : [
+                      'oaf:bg-(--sb-container)',
+                      'oaf:text-(--sb-on-unselected)',
+                      'oaf:hover:bg-(--sb-container-hover)',
+                    ],
               // ── Interaction ────────────────────────────────────────────────
-              'oaf:cursor-pointer oaf:select-none',
+              !disabled && 'oaf:cursor-pointer oaf:select-none',
               // ── Transition ─────────────────────────────────────────────────
               'oaf:transition-[background-color,color] oaf:duration-200 oaf:ease-in-out',
               // ── Focus ──────────────────────────────────────────────────────
               'oaf:outline-none',
-              'oaf:focus-visible:z-20',
-              'oaf:focus-visible:ring-2 oaf:focus-visible:ring-outline oaf:focus-visible:ring-offset-1',
+              !disabled && [
+                'oaf:focus-visible:z-20',
+                'oaf:focus-visible:ring-2 oaf:focus-visible:ring-(--sb-border) oaf:focus-visible:ring-offset-1',
+              ],
             ]
               .flat()
               .filter(Boolean)
               .join(' ')}
           >
             {/* Leading icon area ─────────────────────────────────────────── */}
-            {isSelected ? (
+            {isSelected && !disabled ? (
               <CheckIcon />
             ) : (
               segment.icon != null && segment.icon
@@ -159,4 +243,3 @@ export function SegmentedButton({
     </div>
   )
 }
-

@@ -13,11 +13,10 @@
   --color-text-heading: #08060d;
   --color-border: #e5e4e7;
 
-  /* ── Segmented Button tokens (Material Design 3) ── */
-  --color-secondary: #7c6ba7;   /* selected segment fill                   */
-  --color-on-secondary: #ffffff; /* text / icon on selected segment         */
-  --color-outline: #615d67;     /* segment border                          */
-  --color-on-surface: #1d1b20;  /* text on unselected segment              */
+  /* ── Segmented Button tokens ── */
+  --color-sb-disabled-border: #cccccc;
+  --color-sb-disabled-bg:     #f5f5f5;
+  --color-sb-disabled-text:   rgb(126 126 126 / 38%);
 
   /* ── Font families ── */
   --font-roboto: 'Roboto', sans-serif;
